@@ -11,7 +11,7 @@ def get_keycloak_data() -> Tuple[KeycloakOpenID, str]:
     if keycloak_url is None:
         raise ValueError("The keyclock URL isn't defined!")
 
-    if (client_id is None) or (client_secret is None):
+    if client_id is None or client_secret is None:
         raise ValueError("The client's credentials aren't defined!")
 
     openid = KeycloakOpenID(
@@ -21,6 +21,10 @@ def get_keycloak_data() -> Tuple[KeycloakOpenID, str]:
         client_secret_key=client_secret,
         verify=False
     )
-    config_well_known = openid.well_known()
-    endpoint = config_well_known["token_endpoint"]
-    return openid, endpoint
+
+    token_endpoint = (
+        f"{keycloak_url}/realms/inference/"
+        f"protocol/openid-connect/token"
+    )
+
+    return openid, token_endpoint
